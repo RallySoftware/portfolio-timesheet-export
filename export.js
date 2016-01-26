@@ -59,7 +59,8 @@ Ext.define("GridExporter", {
                     this._XMLIndent(2, 'GUID', true, record.get('ObjectID')) +
                     this._XMLIndent(2, 'ROW', true, '1') +
                     this._XMLIndent(2, 'FORMAT_COL', true, '*') +
-                    this._XMLIndent(2, 'TEXT_LINE', true, '')
+                    // this._XMLIndent(2, 'TEXT_LINE', true, '')
+                    this._XMLIndent(2, 'TEXT_LINE', true, record.get('TaskDisplayString') || record.get('WorkProductDisplayString') || '') 
                 );
             }
         }, this);
