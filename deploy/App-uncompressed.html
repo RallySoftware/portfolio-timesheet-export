@@ -246,16 +246,6 @@ Ext.define('CustomApp', {
         });
 
         return (!_.isUndefined(object) && !_.isNull(object) ? object.get(field) : null);
-
-   // if (hasValue(record.get("TaskObject")) && hasValue(record.get("TaskObject").get(field)))
-   // return record.get("TaskObject").get(field);
-   // if (hasValue(record.get("StoryObject")) && hasValue(record.get("StoryObject").get(field)))
-   // return record.get("StoryObject").get(field);
-   // if (hasValue(record.get("FeatureObject")) && hasValue(record.get("FeatureObject").get(field)))
-   // return record.get("FeatureObject").get(field);
-   // if (hasValue(record.get("EpicObject")) && hasValue(record.get("EpicObject").get(field)))
-   // return record.get("EpicObject").get(field);
-   // return null;
    },
 
    getTypeFieldValue : function( record, type, field ) {
@@ -294,15 +284,11 @@ Ext.define('CustomApp', {
                     "TaskDisplayString" :      r.get("TimeEntryItemObject").get("TaskDisplayString"),
                     "ProjectDisplayString" :   r.get("TimeEntryItemObject").get("ProjectDisplayString"),
                     "WorkProductDisplayString":r.get("TimeEntryItemObject").get("WorkProductDisplayString"),
-                    // "FeatureID" :   r.get("FeatureObject") ? r.get("FeatureObject").get("FormattedID") : null,
-                    // "FeatureName" : r.get("FeatureObject") ? r.get("FeatureObject").get("Name") : null,
                     "FeatureID" :   app.getTypeFieldValue(r, app.piTypes[0],"FormattedID"),
                     "FeatureName" : app.getTypeFieldValue(r, app.piTypes[0],"Name"),
                     'c_SAPNetwork' : app.getFieldValue(r,'c_SAPNetwork'),
                     'c_SAPOperation' : app.getFieldValue(r,'c_SAPOperation'),
                     'c_SAPSubOperation' : app.getFieldValue(r,'c_SAPSubOperation'),
-                    // 'EpicID' : r.get("EpicObject") ? r.get("EpicObject").get("FormattedID") : null,
-                    // 'EpicName' : r.get("EpicObject") ? r.get("EpicObject").get("Name") : null,
                     'EpicID' : app.getTypeFieldValue(r, app.piTypes[1],"FormattedID"),
                     'EpicName' : app.getTypeFieldValue(r, app.piTypes[1],"Name"),
 
@@ -410,7 +396,9 @@ Ext.define('CustomApp', {
             var obj = (!_.isUndefined(item.get("Task")) && 
                         !_.isNull(item.get("Task"))) ?
                             item.get("Task") : item.get("WorkProduct");
-            return app.readObject(obj._type,obj);
+            // console.log("obj",obj);
+            // return app.readObject(obj._type,obj);
+            return app.readObject(obj);
         });
 
         Deft.Promise.all(p).then({
@@ -437,31 +425,38 @@ Ext.define('CustomApp', {
 
    // TimesheetEntryItems -> Stories -> Features -> Epics
 
-   readObject : function(model,ref) {
+   // readObject : function(model,ref) {
+    readObject : function(object) {
 
         var deferred = Ext.create('Deft.Deferred');
-        var obj = _.find( app.cache, function (cacheObj) {
-            if (cacheObj.ref._ref === ref._ref) {
-                return cacheObj.promise.promise;
-            }
-        });
 
-        if (!_.isUndefined(obj)&&!_.isNull(obj)) {
-            return obj.promise.promise;
+        if (_.isNull(object)){
+            deferred.resolve(null);
         } else {
-            Rally.data.ModelFactory.getModel({
-                type : model,
-                success: function(model) {
-                model.load(ref,{
-                   fetch : true,
-                   callback : function(result,operation) {
-                   deferred.resolve(result);
-                   }
-                });
+            var obj = _.find( app.cache, function (cacheObj) {
+                if (cacheObj._ref === object._ref) {
+                    return cacheObj.promise.promise;
                 }
             });
-            app.cache.push({ref : ref, promise: deferred});
-            return deferred.promise;
+
+            if (!_.isUndefined(obj)&&!_.isNull(obj)) {
+                return obj.promise.promise;
+            } else {
+                console.log("object",object);
+                Rally.data.ModelFactory.getModel({
+                    type : object._type,
+                    success: function(model) {
+                    model.load(object,{
+                       fetch : true,
+                       callback : function(result,operation) {
+                       deferred.resolve(result);
+                       }
+                    });
+                    }
+                });
+                app.cache.push({object : object, promise: deferred});
+                return deferred.promise;
+           }
        }
    },
 
@@ -483,7 +478,8 @@ Ext.define('CustomApp', {
 
             var parentRef = obj.get(parentAttr);
             if (!_.isUndefined(parentRef) && !_.isNull(parentRef)) {
-                app.readObject(parentRef._type,parentRef).then({
+                // app.readObject(parentRef._type,parentRef).then({
+                app.readObject(parentRef).then({
                     success : function(r) {
                         callback(r);
                     }
@@ -503,9 +499,14 @@ Ext.define('CustomApp', {
                 }
             });
         }
-        walk(obj);
 
-        return deferred.promise;
+        console.log("obj",obj);
+        if (_.isUndefined(obj) || _.isNull(obj)) {
+            deferred.resolve(null);
+        } else {
+            walk(obj);
+            return deferred.promise;
+        }
     },
    
    readUsers : function(items) {
@@ -516,7 +517,8 @@ Ext.define('CustomApp', {
                         deferred.resolve(null);
                         }
                         else {
-                        app.readObject('User',userRef).then({
+                        // app.readObject('User',userRef).then({
+                        app.readObject(userRef).then({
                                                             success : function(obj) {
                                                             deferred.resolve(obj);
                                                             }    
@@ -532,7 +534,8 @@ Ext.define('CustomApp', {
                         var deferred = Ext.create('Deft.Deferred');
                         var ref = v.get("TimeEntryItem");
                         
-                        app.readObject('TimeEntryItem',ref).then({
+                        //app.readObject('TimeEntryItem',ref).then({
+                        app.readObject(ref).then({
                                                                  success : function(obj) {
                                                                  deferred.resolve(obj);
                                                                  }    
