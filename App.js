@@ -218,7 +218,6 @@ Ext.define('CustomApp', {
                         if(!_.isUndefined(message)){
                             app.remove(message);
                         }
-                        console.log("records",records);
                         app.createArrayStoreFromRecords(records) ;
                     }
                 );
@@ -387,7 +386,6 @@ Ext.define('CustomApp', {
             var obj = (!_.isUndefined(item.get("Task")) && 
                         !_.isNull(item.get("Task"))) ?
                             item.get("Task") : item.get("WorkProduct");
-            // console.log("obj",obj);
             // return app.readObject(obj._type,obj);
             return app.readObject(obj);
         });
@@ -433,7 +431,6 @@ Ext.define('CustomApp', {
             if (!_.isUndefined(obj)&&!_.isNull(obj)) {
                 return obj.promise.promise;
             } else {
-                console.log("object",object);
                 Rally.data.ModelFactory.getModel({
                     type : object._type,
                     success: function(model) {
@@ -491,7 +488,6 @@ Ext.define('CustomApp', {
             });
         }
 
-        console.log("obj",obj);
         if (_.isUndefined(obj) || _.isNull(obj)) {
             deferred.resolve(null);
         } else {
