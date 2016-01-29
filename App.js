@@ -423,7 +423,7 @@ Ext.define('CustomApp', {
             deferred.resolve(null);
         } else {
             var obj = _.find( app.cache, function (cacheObj) {
-                if (cacheObj._ref === object._ref) {
+                if (cacheObj.object._ref === object._ref) {
                     return cacheObj.promise.promise;
                 }
             });
