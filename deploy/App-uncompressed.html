@@ -294,7 +294,8 @@ Ext.define('CustomApp', {
                     'Hours' : r.get('Hours'),
                     'ObjectID' : r.get("ObjectID"),
 //                    'ObjectID' : r.get("TimeEntryItemObject").get("ObjectID"),
-                    'Date' : Ext.Date.format(r.get("DateVal"),"D d M Y"),
+                    // 'Date' : Ext.Date.format(r.get("DateVal"),"D d M Y"),
+                    'Date' : Ext.Date.format(r.get("DateVal"),"Ymd"),
                     'c_KMDEmployeeID' : r.get("UserObject").get("c_KMDEmployeeID")
                     };
                     });
