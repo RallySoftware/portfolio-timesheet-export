@@ -146,15 +146,6 @@ Ext.define('CustomApp', {
 
                          });
                     }
-                     // export
-                     // var grid = app.down("#grid");
-//                     var link = app.down("#exportLink");
-//                     link.update(app.exporter.exportGrid(app.grid));
-//                     }
-//                     },
-//                     {
-//                     itemId : "exportLink", margin : "12 0 0 10"
-
                 }
             ]
         }
@@ -249,47 +240,62 @@ Ext.define('CustomApp', {
 
    createArrayStoreFromRecords : function(records) {
 
-   var fields = [
-                 {displayName: 'User', name: 'UserName'},
-                 {displayName: 'Task', name: 'TaskDisplayString'},
-                 {displayName: 'Project', name: 'ProjectDisplayString'},
-                 {displayName: 'Work Product', name: 'WorkProductDisplayString'},
-                 {displayName: 'Feature ID', name: 'FeatureID'},
-                 {displayName: 'Feature Title', name: 'FeatureName'},
-                 {displayName: 'SAP Network', name: 'c_SAPNetwork'},
-                 {displayName: 'SAP Operation', name: 'c_SAPOperation'},
-                 {displayName: 'SAP Sub Operation', name: 'c_SAPSubOperation'},
-                 {displayName: 'Epic ID', name: 'EpicID'},
-                 {displayName: 'Epic Title', name: 'EpicName'},
-                 {displayName: 'Hours Entered', name: 'Hours'},
-                 {displayName: 'Unique ID', name: 'ObjectID'},
-                 {displayName: 'Date', name: 'Date'},
-                 {displayName: 'Employee ID', name: 'c_KMDEmployeeID'}
-                 ];
+    var fields = [
+        {displayName: 'User',           name: 'UserName'},
+        {displayName: 'Task',           name: 'TaskDisplayString'},
+        {displayName: 'Project',        name: 'ProjectDisplayString'},
+        {displayName: 'Work Product',   name: 'WorkProductDisplayString'},
+        {displayName: 'Feature ID',     name: 'FeatureID'},
+        {displayName: 'Feature Title',  name: 'FeatureName'},
+        {displayName: 'SAP Network',    name: 'c_SAPNetwork'},
+        {displayName: 'SAP Operation',  name: 'c_SAPOperation'},
+        {displayName: 'SAP Sub Operation', name: 'c_SAPSubOperation'},
+        {displayName: 'Epic ID',        name: 'EpicID'},
+        {displayName: 'Epic Title',     name: 'EpicName'},
+        {displayName: 'Hours Entered',  name: 'Hours'},
+        {displayName: 'Unique ID',      name: 'ObjectID'},
+        {displayName: 'Date',           name: 'Date'},
+        {displayName: 'Employee ID',    name: 'c_KMDEmployeeID'},
+        {displayName: 'Hierarchy',    name: 'Hierarchy'}
+    ];
 
-   // convert records into a json data structure
-   var data = _.map(records,function(r){
-                    return {
-                    "UserName" :               r.get("UserObject").get("UserName"),
-                    "TaskDisplayString" :      r.get("TimeEntryItemObject").get("TaskDisplayString"),
-                    "ProjectDisplayString" :   r.get("TimeEntryItemObject").get("ProjectDisplayString"),
-                    "WorkProductDisplayString":r.get("TimeEntryItemObject").get("WorkProductDisplayString"),
-                    "FeatureID" :   app.getTypeFieldValue(r, app.piTypes[0],"FormattedID"),
-                    "FeatureName" : app.getTypeFieldValue(r, app.piTypes[0],"Name"),
-                    'c_SAPNetwork' : app.getFieldValue(r,'c_SAPNetwork'),
-                    'c_SAPOperation' : app.getFieldValue(r,'c_SAPOperation'),
-                    'c_SAPSubOperation' : app.getFieldValue(r,'c_SAPSubOperation'),
-                    'EpicID' : app.getTypeFieldValue(r, app.piTypes[1],"FormattedID"),
-                    'EpicName' : app.getTypeFieldValue(r, app.piTypes[1],"Name"),
-
-                    'Hours' : r.get('Hours'),
-                    'ObjectID' : r.get("ObjectID"),
-//                    'ObjectID' : r.get("TimeEntryItemObject").get("ObjectID"),
-                    // 'Date' : Ext.Date.format(r.get("DateVal"),"D d M Y"),
-                    'Date' : Ext.Date.format(r.get("DateVal"),"Ymd"),
-                    'c_KMDEmployeeID' : r.get("UserObject").get("c_KMDEmployeeID")
-                    };
-                    });
+    // convert records into a json data structure
+    var data = _.map(records,function(r) {
+        return {
+            "UserName" :               
+                r.get("UserObject").get("UserName"),
+            "TaskDisplayString" :      
+                r.get("TimeEntryItemObject").get("TaskDisplayString"),
+            "ProjectDisplayString" :   
+                r.get("TimeEntryItemObject").get("ProjectDisplayString"),
+            "WorkProductDisplayString":
+                r.get("TimeEntryItemObject").get("WorkProductDisplayString"),
+            "FeatureID" :   
+                app.getTypeFieldValue(r, app.piTypes[0],"FormattedID"),
+            "FeatureName" : 
+                app.getTypeFieldValue(r, app.piTypes[0],"Name"),
+            'c_SAPNetwork' : 
+                app.getFieldValue(r,'c_SAPNetwork'),
+            'c_SAPOperation' : 
+                app.getFieldValue(r,'c_SAPOperation'),
+            'c_SAPSubOperation' : 
+                app.getFieldValue(r,'c_SAPSubOperation'),
+            'EpicID' : 
+                app.getTypeFieldValue(r, app.piTypes[1],"FormattedID"),
+            'EpicName' : 
+                app.getTypeFieldValue(r, app.piTypes[1],"Name"),
+            'Hours' : 
+                r.get('Hours'),
+            'ObjectID' : 
+                r.get("ObjectID"),
+            'Date' : 
+                Ext.Date.format(r.get("DateVal"),"Ymd"),
+            'c_KMDEmployeeID' : 
+                r.get("UserObject").get("c_KMDEmployeeID"),
+            'Hierarchy' : 
+                r.get("Hierarchy")
+        };
+    });
 
         var store = Ext.create('Ext.data.JsonStore', {
             fields: fields,
@@ -326,6 +332,23 @@ Ext.define('CustomApp', {
                                 return Ext.String.format('<div style="background-color:#E4EECF"> {0} item{1}</div>', value, value > 1?'s':'');
                             }
                         };
+                    } else if (f.name === 'TaskDisplayString' ||
+                               f.name === 'WorkProductDisplayString' ||
+                               f.name === "FeatureID" ||
+                               f.name === "EpicID") {
+                        return {
+                            text:f.displayName,
+                            dataIndex:f.name,
+                            renderer : function(value, metaData, record, rowIdx, colIdx, store, view) {
+                                return app.renderLink(value,record);
+                            }
+                        };
+                    } else if (f.name === 'Hierarchy') {
+                        return {
+                            text:f.displayName,
+                            dataIndex:f.name,
+                            visible : false
+                        };
                     } else
                         return {
                             text:f.displayName,
@@ -337,24 +360,20 @@ Ext.define('CustomApp', {
 
         this.add(app.grid);
 
-          //Add a tip to show some user details, e.g. phone number, dept, etc.
-//        var gView = app.grid.getView();
-//        var tip = Ext.create('Ext.tip.ToolTip', {
-//            target: gView.el,
-//            autoHide: true,
-//            delegate: gView.itemSelector,
-//            trackMouse: true,
-//            listeners: {
-//                beforeshow: function updateTipBody(tip) {
-//
-//                    var lr = _.find(records, function(r) { return (r.get('ObjectID') === gView.getRecord(tip.triggerElement).get('ObjectID'))});
-//                    tip.update(lr.get('UserObject').get('UserName'));
-//                }
-//            }
-//        });
-//
-//        app.grid.add(tip);
 
+    },
+
+    // creates a url link for the column based on the formatted id in the column
+    renderLink : function( textValue, record ) {
+
+        var fid = _.first(textValue.split(":"));
+        var obj = _.find(record.get("Hierarchy"),function(hObj){
+            return fid === hObj.get("FormattedID");
+        });
+        if (!_.isUndefined(obj) && !_.isNull(obj)) {
+            return '<a href='+Rally.nav.Manager.getDetailUrl(obj)+'>'+textValue+'</a>';
+        } 
+        return "";
     },
 
     readRelatedValues : function(values,callback) {
