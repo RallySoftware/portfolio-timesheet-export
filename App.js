@@ -347,7 +347,8 @@ Ext.define('CustomApp', {
                         return {
                             text:f.displayName,
                             dataIndex:f.name,
-                            visible : false
+                            visible : false,
+                            hidden : true
                         };
                     } else
                         return {

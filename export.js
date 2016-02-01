@@ -210,7 +210,8 @@ Ext.define("GridExporter", {
         var that = this;
         Ext.Array.each(cols, function(col, index) {
         // Ext.Array.each(sortedCols, function(col, index) { 
-            if (col.visible !== false ) {
+            // console.log(col);
+            if (col.hidden !== true ) {
                 // fix the issue with the "SYLK" warning in excel by prepending "Item" to the ID column
                 var colLabel = col.dataIndex;
 //                var colLabel = (index === 0 ? "Item " : "") + col.dataIndex;
@@ -225,7 +226,7 @@ Ext.define("GridExporter", {
             if ( (!onlyErrors) || (!valid) ){
                 Ext.Array.each(cols, function(col, index) {
                 
-                    if (col.visible !== false) {
+                    if (col.hidden !== true) {
                         var fieldName   = col.dataIndex;
                         var text        = record.get(fieldName);
                         rowData += that._getFieldTextAndEscape(text,record,col,index) + ',';

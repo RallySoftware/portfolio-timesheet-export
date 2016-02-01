@@ -356,7 +356,8 @@ Ext.define('CustomApp', {
                         return {
                             text:f.displayName,
                             dataIndex:f.name,
-                            visible : false
+                            visible : false,
+                            hidden : true
                         };
                     } else
                         return {
@@ -842,7 +843,8 @@ Ext.define('CustomApp', {
         var that = this;
         Ext.Array.each(cols, function(col, index) {
         // Ext.Array.each(sortedCols, function(col, index) { 
-            if (col.visible !== false ) {
+            // console.log(col);
+            if (col.hidden !== true ) {
                 // fix the issue with the "SYLK" warning in excel by prepending "Item" to the ID column
                 var colLabel = col.dataIndex;
 //                var colLabel = (index === 0 ? "Item " : "") + col.dataIndex;
@@ -857,7 +859,7 @@ Ext.define('CustomApp', {
             if ( (!onlyErrors) || (!valid) ){
                 Ext.Array.each(cols, function(col, index) {
                 
-                    if (col.visible !== false) {
+                    if (col.hidden !== true) {
                         var fieldName   = col.dataIndex;
                         var text        = record.get(fieldName);
                         rowData += that._getFieldTextAndEscape(text,record,col,index) + ',';
