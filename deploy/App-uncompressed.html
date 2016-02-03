@@ -737,7 +737,7 @@ Ext.define('CustomApp', {
             if ( record.get('c_SAPNetwork') && record.get('c_SAPOperation') && record.get('c_KMDEmployeeID')) {
                 text += this._XMLIndent(1, 'Datarow', false,
                     this._XMLIndent(2, 'GUID', true, record.get('ObjectID') || '') +
-                    this._XMLIndent(2, 'WORKDATE', true, Ext.Date.format(new Date(record.get('Date')), 'Ymd')) +
+                    this._XMLIndent(2, 'WORKDATE', true, record.get('Date')) /*Ext.Date.format(new Date(record.get('Date')), 'Ymd')) */ +
                     this._XMLIndent(2, 'EMPLOYEENUMBER', true, record.get('c_KMDEmployeeID') || '') +
                     this._XMLIndent(2, 'ACTTYPE', true, '1') +
                     this._XMLIndent(2, 'NETWORK', true, record.get('c_SAPNetwork') || '') +
