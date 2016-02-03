@@ -235,7 +235,7 @@ Ext.define('CustomApp', {
             return h.get("_type")===type.get("TypePath").toLowerCase();
         })
 
-        return (!_.isUndefined(object) && !_.isNull(object) ? object.get(field) : null);
+        return (!_.isUndefined(object) && !_.isNull(object) ? object.get(field) : "");
    },
 
    createArrayStoreFromRecords : function(records) {
@@ -380,6 +380,7 @@ Ext.define('CustomApp', {
     readRelatedValues : function(values,callback) {
         // time entry items
         app.readTimeEntryItems(values).then( {
+
             success: function(items) {
                 app.setValues(values,items,"TimeEntryItemObject");
                // users
@@ -544,10 +545,10 @@ Ext.define('CustomApp', {
                         
                         //app.readObject('TimeEntryItem',ref).then({
                         app.readObject(ref).then({
-                                                                 success : function(obj) {
-                                                                 deferred.resolve(obj);
-                                                                 }    
-                                                                 });
+                            success : function(obj) {
+                                deferred.resolve(obj);
+                            }    
+                        });
                         return deferred.promise;
                         });
    return Deft.Promise.all(promises);
