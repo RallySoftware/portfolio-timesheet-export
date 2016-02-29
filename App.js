@@ -189,6 +189,14 @@ Ext.define('CustomApp', {
         }
 
         var filter = app._getDateFilter();
+
+        // exclude zero value items
+        filter.push({
+           property: 'Hours',
+           operator: '>',
+           value: 0
+        });
+
         console.log(filter);
 
         Ext.create('Rally.data.wsapi.Store', {
