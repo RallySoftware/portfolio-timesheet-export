@@ -36,10 +36,13 @@ Ext.define("GridExporter", {
     },
 
     _XMLIndent: function(index, tag, leaf, data) {
+        if (leaf === true)
+            data = _.escape(data);
+
         var text = '\n';
         for (var i = 0; i < index; i++) text += '\t';
         text += '<' + tag + '>';
-        text += _.escape(data);
+        text += data;
         if (!leaf) { text += '\n'; for (i = 0; i < index; i++) text += '\t';}
         text += '</' + tag + '>';
         return text;
