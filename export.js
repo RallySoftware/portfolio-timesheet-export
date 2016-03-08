@@ -39,7 +39,7 @@ Ext.define("GridExporter", {
         var text = '\n';
         for (var i = 0; i < index; i++) text += '\t';
         text += '<' + tag + '>';
-        text += data;
+        text += _.escape(data);
         if (!leaf) { text += '\n'; for (i = 0; i < index; i++) text += '\t';}
         text += '</' + tag + '>';
         return text;
